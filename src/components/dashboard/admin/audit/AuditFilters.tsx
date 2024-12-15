@@ -1,11 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Search, Filter, Calendar } from 'lucide-react';
 
-interface AuditFiltersProps {
-  onFilterChange: (filters: any) => void;
+interface AuditFilters {
+  startDate: string;
+  endDate: string;
+  eventType: string;
+  userId: string;
 }
 
-export const AuditFilters = ({ onFilterChange }: AuditFiltersProps) => {
+interface AuditFiltersProps {
+  onFilterChange: (filters: AuditFilters) => void;
+}
+
+export const AuditFilters: React.FC<AuditFiltersProps> = ({ onFilterChange }) => {
+  const [filters, setFilters] = useState<AuditFilters>({
+    startDate: '',
+    endDate: '',
+    eventType: '',
+    userId: '',
+  });
+
+  const handleFilterChange = (key: keyof AuditFilters, value: string) => {
+    const newFilters = { ...filters, [key]: value };
+    setFilters(newFilters);
+    onFilterChange(newFilters);
+  };
+
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
       <div className="relative flex-1">
@@ -39,6 +59,40 @@ export const AuditFilters = ({ onFilterChange }: AuditFiltersProps) => {
           <Filter className="h-5 w-5" />
           <span>More Filters</span>
         </button>
+      </div>
+
+      <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
+        <div className="relative flex-1">
+          <input
+            type="date"
+            placeholder="Start Date"
+            className="w-full p-2 border rounded"
+            value={filters.startDate}
+            onChange={(e) => handleFilterChange('startDate', e.target.value)}
+          />
+        </div>
+        <div className="relative flex-1">
+          <input
+            type="date"
+            placeholder="End Date"
+            className="w-full p-2 border rounded"
+            value={filters.endDate}
+            onChange={(e) => handleFilterChange('endDate', e.target.value)}
+          />
+        </div>
+        <div className="relative flex-1">
+          <select
+            className="w-full p-2 border rounded"
+            value={filters.eventType}
+            onChange={(e) => handleFilterChange('eventType', e.target.value)}
+          >
+            <option value="">All Events</option>
+            <option value="login">Login</option>
+            <option value="logout">Logout</option>
+            <option value="update">Update</option>
+            <option value="delete">Delete</option>
+          </select>
+        </div>
       </div>
     </div>
   );

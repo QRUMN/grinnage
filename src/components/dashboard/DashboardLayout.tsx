@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Calendar, CreditCard, FileText, Settings, LogOut } from 'lucide-react';
+import { Home, Calendar, CreditCard, FileText, Settings, Menu, User } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { useNavigate } from 'react-router-dom';
 import { authApi } from '../../lib/api/auth';
@@ -32,6 +32,16 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <div className="flex h-screen bg-gray-50 dark:bg-dark-900">
       <Sidebar navItems={navItems} onLogout={handleLogout} />
       <main className="flex-1 overflow-y-auto p-8">
+        <div className="flex items-center p-4 border-b">
+          <button className="md:hidden mr-4">
+            <Menu className="h-6 w-6" />
+          </button>
+          <div className="flex-1" />
+          <button className="flex items-center space-x-2">
+            <User className="h-6 w-6" />
+            <span className="hidden md:inline">Profile</span>
+          </button>
+        </div>
         <div className="max-w-7xl mx-auto">{children}</div>
       </main>
     </div>

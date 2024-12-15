@@ -1,19 +1,22 @@
 import React from 'react';
 import { Search, Filter, X } from 'lucide-react';
 
+interface UserFilters {
+  role: string;
+  status: string;
+  search: string;
+}
+
 interface UserFiltersProps {
   search: string;
   onSearchChange: (value: string) => void;
-  filters: {
-    role?: string;
-    status?: string;
-  };
-  onFilterChange: (filters: any) => void;
+  filters: UserFilters;
+  onFilterChange: (filters: UserFilters) => void;
 }
 
-export const UserFilters = ({ search, onSearchChange, filters, onFilterChange }: UserFiltersProps) => {
+export const UserFilters: React.FC<UserFiltersProps> = ({ search, onSearchChange, filters, onFilterChange }) => {
   const clearFilters = () => {
-    onFilterChange({});
+    onFilterChange({ role: '', status: '', search: '' });
     onSearchChange('');
   };
 

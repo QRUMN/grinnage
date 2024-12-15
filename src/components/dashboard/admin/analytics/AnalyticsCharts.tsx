@@ -1,10 +1,27 @@
 import React from 'react';
 import { DashboardCard } from '../../common/DashboardCard';
-import { Users, ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown } from 'lucide-react';
+import { BarChart, LineChart } from 'lucide-react';
 
 export const AnalyticsCharts = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <DashboardCard title="Revenue Trends" className="col-span-2">
+        <div className="flex items-center mb-4">
+          <BarChart className="h-5 w-5 mr-2" />
+          <span>Monthly Revenue</span>
+        </div>
+        {/* Chart component goes here */}
+      </DashboardCard>
+
+      <DashboardCard title="User Growth" className="col-span-2">
+        <div className="flex items-center mb-4">
+          <LineChart className="h-5 w-5 mr-2" />
+          <span>User Acquisition</span>
+        </div>
+        {/* Chart component goes here */}
+      </DashboardCard>
+
       <DashboardCard title="User Growth">
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">

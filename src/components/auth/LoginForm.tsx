@@ -8,6 +8,10 @@ import { useSetAtom } from 'jotai';
 import { setUserAtom } from '../../store/auth';
 import { authApi } from '../../lib/api/auth';
 
+interface LoginError {
+  message: string;
+}
+
 export const LoginForm = () => {
   const navigate = useNavigate();
   const setUser = useSetAtom(setUserAtom);
@@ -15,7 +19,7 @@ export const LoginForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting, errors },
     setError,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -31,19 +35,18 @@ export const LoginForm = () => {
       
       // Redirect based on user type
       switch (response.user.role) {
-        case 'commercial':
-          navigate('/commercial');
-          break;
         case 'admin':
-          navigate('/admin');
+          navigate('/admin/dashboard');
+          break;
+        case 'commercial':
+          navigate('/commercial/dashboard');
           break;
         default:
           navigate('/dashboard');
       }
     } catch (error) {
-      setError('root', {
-        message: 'Invalid email or password',
-      });
+      const loginError = error as LoginError;
+      setError('root', { message: loginError.message || 'An error occurred during login' });
     }
   };
 

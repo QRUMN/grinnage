@@ -1,4 +1,4 @@
-import type { User, LoginFormData } from '../../types/auth';
+import type { User, LoginFormData, RegisterData } from '../../types/auth';
 
 interface AuthResponse {
   user: User;
@@ -62,6 +62,26 @@ export const authApi = {
     localStorage.setItem('user_data', JSON.stringify(userWithoutPassword));
     
     return response;
+  },
+
+  register: async (data: RegisterData) => {
+    const { email, firstName, lastName, password } = data;
+    // Simulated API call - in a real app, you would hash the password and send it to the server
+    return new Promise<AuthResponse>((resolve) => {
+      setTimeout(() => {
+        // Store hashed password or token in a real implementation
+        localStorage.setItem('auth_token', `${email}_${password}`);
+        resolve({
+          user: {
+            id: '1',
+            email,
+            firstName,
+            lastName,
+            role: 'user'
+          },
+        });
+      }, 1000);
+    });
   },
 
   logout: async () => {

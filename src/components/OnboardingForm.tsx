@@ -16,7 +16,6 @@ export const OnboardingForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<OnboardingFormData>({
     resolver: zodResolver(onboardingSchema),
   });

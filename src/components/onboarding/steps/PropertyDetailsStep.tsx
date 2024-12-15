@@ -1,15 +1,14 @@
 import React from 'react';
-import { UseFormRegister, FieldErrors, UseFormWatch } from 'react-hook-form';
+import { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { Input } from '../../common/Input';
 import type { OnboardingFormData } from '../../../types';
 
 interface PropertyDetailsStepProps {
   register: UseFormRegister<OnboardingFormData>;
   errors: FieldErrors<OnboardingFormData>;
-  watch: UseFormWatch<OnboardingFormData>;
 }
 
-export const PropertyDetailsStep = ({ register, errors, watch }: PropertyDetailsStepProps) => {
+export const PropertyDetailsStep = ({ register, errors }: PropertyDetailsStepProps) => {
   // Format phone number as user types
   const formatPhoneNumber = (value: string) => {
     if (!value) return value;

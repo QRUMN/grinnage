@@ -12,24 +12,29 @@ export const SecuritySettings = () => {
   return (
     <DashboardCard title="Security Settings">
       <div className="space-y-8">
-        <form onSubmit={handlePasswordChange} className="space-y-6">
-          <h3 className="text-lg font-medium">Change Password</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormInput
-              label="Current Password"
-              type="password"
-              placeholder="Enter current password"
-            />
-            <FormInput
-              label="New Password"
-              type="password"
-              placeholder="Enter new password"
-            />
+        <div className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <Lock className="h-5 w-5 text-gray-400" />
+            <h3 className="text-lg font-medium">Password Settings</h3>
           </div>
-          <button type="submit" className="btn-primary">
-            Update Password
-          </button>
-        </form>
+          <form onSubmit={handlePasswordChange} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormInput
+                label="Current Password"
+                type="password"
+                placeholder="Enter current password"
+              />
+              <FormInput
+                label="New Password"
+                type="password"
+                placeholder="Enter new password"
+              />
+            </div>
+            <button type="submit" className="btn-primary">
+              Update Password
+            </button>
+          </form>
+        </div>
 
         <div className="border-t dark:border-dark-700 pt-6">
           <h3 className="text-lg font-medium mb-4">Two-Factor Authentication</h3>

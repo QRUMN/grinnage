@@ -4,8 +4,12 @@ import { DashboardCard } from '../../common/DashboardCard';
 
 export const SecuritySettings = () => {
   return (
-    <DashboardCard title="Security Settings">
+    <DashboardCard>
       <div className="space-y-6">
+        <div className="flex items-center space-x-2 mb-4">
+          <Shield className="h-6 w-6 text-primary" />
+          <h2 className="text-2xl font-bold">Security Settings</h2>
+        </div>
         <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-dark-800 rounded-lg">
           <div className="flex items-center space-x-3">
             <Key className="w-5 h-5 text-gray-400" />

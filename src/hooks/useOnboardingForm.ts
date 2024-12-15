@@ -32,8 +32,7 @@ export const useOnboardingForm = () => {
 
   const onSubmit = async (data: OnboardingFormData) => {
     try {
-      const formData = JSON.parse(JSON.stringify(data));
-      const response = await authApi.register(formData);
+      await authApi.register(data);
       navigate('/dashboard');
     } catch (error) {
       console.error('Registration failed:', error);

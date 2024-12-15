@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, Globe, Clock } from 'lucide-react';
+import { Globe, Clock, Save } from 'lucide-react';
 import { DashboardCard } from '../../common/DashboardCard';
 
 export const GeneralSettings = () => {
@@ -36,7 +36,12 @@ export const GeneralSettings = () => {
           </select>
         </div>
 
-        <button className="btn-primary w-full">Save Changes</button>
+        <div className="mt-6">
+          <button className="flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+            <Save className="h-4 w-4 mr-2" />
+            Save Changes
+          </button>
+        </div>
       </div>
     </DashboardCard>
   );

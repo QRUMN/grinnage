@@ -1,15 +1,16 @@
 import React from 'react';
-import { Building2, Users, Bell } from 'lucide-react';
+import { Bell, Settings } from 'lucide-react';
 import { DashboardCard } from '../common/DashboardCard';
 import { FormInput } from '../../common/form';
 
 export const CommercialSettings = () => {
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex items-center space-x-2 mb-6">
+        <Settings className="h-6 w-6 text-primary" />
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
-        <p className="text-gray-600 dark:text-gray-400">Manage your business preferences</p>
       </div>
+      <p className="text-gray-600 dark:text-gray-400">Manage your business preferences</p>
 
       <DashboardCard title="Company Information">
         <form className="space-y-6">

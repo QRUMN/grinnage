@@ -12,7 +12,7 @@ export const useAuth = () => {
       try {
         const user = await authApi.getCurrentUser();
         setUser(user);
-      } catch (error) {
+      } catch {
         setUser(null);
       }
     };

@@ -41,6 +41,13 @@ export const DashboardLayout = ({ children }: { children?: React.ReactNode }) =>
             <ThemeToggle />
           </div>
           {children || <Outlet />}
+          <button 
+            onClick={handleLogout}
+            className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50"
+          >
+            <LogOut className="h-5 w-5 mr-2" />
+            <span>Logout</span>
+          </button>
         </div>
       </main>
     </div>
