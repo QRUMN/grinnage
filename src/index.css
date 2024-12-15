@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white dark:bg-dark-900 text-dark-900 dark:text-white antialiased;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-200 inline-flex items-center justify-center;
+  }
+
+  .btn-primary {
+    @apply btn bg-[#56e39f] text-dark-900 hover:bg-[#33d789] 
+           focus:outline-none focus:ring-2 focus:ring-[#56e39f] focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply btn bg-white/10 backdrop-blur-sm border border-white/20 text-white 
+           hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 focus:ring-offset-2;
+  }
+
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6
+           hover:bg-white/20 transition-all duration-300;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-dark-900 dark:text-white mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-xl text-dark-600 dark:text-dark-300 max-w-2xl mx-auto;
+  }
+}
