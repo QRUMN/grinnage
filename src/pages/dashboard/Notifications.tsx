@@ -1,137 +1,132 @@
 import React from 'react';
-import { Bell, Check, X, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import { PageTransition } from '@/components/ui/page-transition';
-import { useNotificationStore } from '@/lib/stores/notificationStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
+import { useNotificationStore } from '@/lib/stores/notificationStore';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Bell, Check, Trash2, AlertTriangle, Info } from 'lucide-react';
 
-export function Notifications() {
+export const Notifications = () => {
   const {
     notifications,
-    markNotificationAsRead,
-    markAllNotificationsAsRead,
-    clearNotifications,
-    getUnreadCount,
+    markAsRead,
+    dismissNotification,
+    clearAllNotifications,
+    getUnreadCount
   } = useNotificationStore();
 
   const unreadCount = getUnreadCount();
 
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'alert':
+        return <AlertTriangle className="h-5 w-5 text-destructive" />;
+      case 'info':
+        return <Info className="h-5 w-5 text-primary" />;
+      default:
+        return <Bell className="h-5 w-5 text-muted-foreground" />;
+    }
+  };
+
   return (
-    <PageTransition>
-      <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-semibold tracking-tight">
-              Notifications
+    <div className="container mx-auto p-4 md:p-6 max-w-4xl">
+      <div className="bg-background rounded-lg shadow-sm border">
+        {/* Header */}
+        <div className="p-4 md:p-6 border-b">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-semibold">Notifications</h1>
               {unreadCount > 0 && (
-                <span className="ml-2 text-sm text-muted-foreground">
-                  ({unreadCount} unread)
-                </span>
+                <Badge variant="secondary">
+                  {unreadCount} unread
+                </Badge>
               )}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Manage your notifications and preferences
-            </p>
-          </div>
-          <div className="space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={markAllNotificationsAsRead}
-              disabled={unreadCount === 0}
-            >
-              <Check className="h-4 w-4 mr-2" />
-              Mark all as read
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={clearNotifications}
-              disabled={notifications.length === 0}
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Clear all
-            </Button>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearAllNotifications}
+                className="w-full md:w-auto"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Clear All
+              </Button>
+            </div>
           </div>
         </div>
 
-        <ScrollArea className="h-[calc(100vh-12rem)]">
-          <AnimatePresence mode="wait">
+        {/* Notifications List */}
+        <div className="divide-y">
+          <AnimatePresence initial={false}>
             {notifications.length === 0 ? (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="flex flex-col items-center justify-center h-[400px] space-y-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="p-8 text-center text-muted-foreground"
               >
-                <Bell className="h-12 w-12 text-muted-foreground/50" />
-                <div className="text-center space-y-2">
-                  <p className="text-lg font-medium">No notifications</p>
-                  <p className="text-sm text-muted-foreground">
-                    You're all caught up! Check back later for updates.
-                  </p>
-                </div>
+                <Bell className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                <p>No notifications yet</p>
               </motion.div>
             ) : (
-              <motion.div
-                layout
-                className="space-y-4"
-              >
-                {notifications.map((notification) => (
-                  <motion.div
-                    key={notification.id}
-                    layout
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                  >
-                    <Card
-                      className={cn(
-                        "p-4 transition-colors",
-                        !notification.read && "bg-muted/50 dark:bg-muted/10"
-                      )}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-1">
-                          <p className="font-medium leading-none">
-                            {notification.title}
-                            {!notification.read && (
-                              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary text-primary-foreground">
-                                New
-                              </span>
-                            )}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {notification.message}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {format(notification.date, 'PPp')}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => markNotificationAsRead(notification.id)}
-                            disabled={notification.read}
-                          >
-                            <Check className="h-4 w-4" />
-                          </Button>
-                        </div>
+              notifications.map((notification) => (
+                <motion.div
+                  key={notification.id}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className={cn(
+                    "p-4 md:p-6",
+                    !notification.read && "bg-accent/5"
+                  )}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      {getNotificationIcon(notification.type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                        <p className="font-medium">{notification.title}</p>
+                        <time className="text-sm text-muted-foreground">
+                          {format(new Date(notification.timestamp), 'MMM d, h:mm a')}
+                        </time>
                       </div>
-                    </Card>
-                  </motion.div>
-                ))}
-              </motion.div>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {notification.message}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      {!notification.read && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => markAsRead(notification.id)}
+                          className="w-full md:w-auto"
+                        >
+                          <Check className="h-4 w-4" />
+                          <span className="sr-only">Mark as read</span>
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => dismissNotification(notification.id)}
+                        className="w-full md:w-auto"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Dismiss</span>
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
             )}
           </AnimatePresence>
-        </ScrollArea>
+        </div>
       </div>
-    </PageTransition>
+    </div>
   );
-}
+};

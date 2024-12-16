@@ -34,15 +34,11 @@ export const SideNav = ({
   onToggleCollapse 
 }: SideNavProps) => {
   const location = useLocation();
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
 
   const toggleExpand = (path: string) => {
-    setExpandedItems(prev => 
-      prev.includes(path) 
-        ? prev.filter(p => p !== path)
-        : [...prev, path]
-    );
+    setExpandedItem(expandedItem === path ? null : path);
   };
 
   const getBadgeColor = (variant: NavItem['badge']['variant']) => {
@@ -60,7 +56,7 @@ export const SideNav = ({
 
   const renderNavItem = (item: NavItem) => {
     const isActive = location.pathname === item.path;
-    const isExpanded = expandedItems.includes(item.path);
+    const isExpanded = expandedItem === item.path;
     const hasSubItems = item.subItems && item.subItems.length > 0;
 
     return (
@@ -113,7 +109,7 @@ export const SideNav = ({
           )}
         </Link>
 
-        {hasSubItems && isExpanded && !collapsed && (
+        {!collapsed && hasSubItems && isExpanded && (
           <div className="ml-6 space-y-1">
             {item.subItems.map((subItem) => (
               <Link
@@ -140,7 +136,8 @@ export const SideNav = ({
     <>
       <aside className={cn(
         "group/sidebar h-full bg-white border-r pt-16 relative duration-300",
-        collapsed ? "w-[70px]" : "w-[240px]"
+        collapsed ? "w-20" : "w-64",
+        className
       )}>
         <div className="p-2">
           <button

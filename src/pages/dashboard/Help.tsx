@@ -1,162 +1,159 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Book, Phone, Mail, MessageSquare, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { PageTransition } from '@/components/ui/page-transition';
-import { helpService, type HelpArticle } from '@/lib/services/helpService';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Search, ChevronRight, HelpCircle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+import { useHelpService } from '@/lib/services/helpService';
 
-export function Help() {
+export const Help = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [articles, setArticles] = useState<HelpArticle[]>([]);
-  const [selectedArticle, setSelectedArticle] = useState<HelpArticle | null>(null);
-  const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
+  const { searchArticles, getCategories, getArticlesByCategory } = useHelpService();
 
-  useEffect(() => {
-    setCategories(helpService.getAllCategories());
-    setArticles(helpService.searchArticles(''));
-  }, []);
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      const results = helpService.searchArticles(searchQuery);
-      setArticles(selectedCategory 
-        ? results.filter(article => article.category === selectedCategory)
-        : results
-      );
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, selectedCategory]);
-
-  const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category === selectedCategory ? null : category);
-  };
+  const categories = getCategories();
+  const articles = selectedCategory
+    ? getArticlesByCategory(selectedCategory)
+    : searchQuery
+    ? searchArticles(searchQuery)
+    : [];
 
   return (
-    <PageTransition>
-      <div className="p-6 space-y-6">
-        <div className="space-y-1">
-          <h2 className="text-2xl font-semibold tracking-tight">Help Center</h2>
-          <p className="text-sm text-muted-foreground">
-            Find answers to your questions and get support
-          </p>
+    <div className="container mx-auto p-4 md:p-6">
+      <div className="grid md:grid-cols-[300px,1fr] gap-6">
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search help articles..."
+              className="pl-9"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setSelectedCategory(null);
+              }}
+            />
+          </div>
+
+          {/* Categories */}
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold">Categories</h2>
+            <div className="space-y-1">
+              {categories.map((category) => (
+                <Button
+                  key={category.id}
+                  variant={selectedCategory === category.id ? "secondary" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => {
+                    setSelectedCategory(category.id);
+                    setSearchQuery('');
+                  }}
+                >
+                  {category.icon}
+                  <span className="ml-2">{category.name}</span>
+                  <ChevronRight className="ml-auto h-4 w-4" />
+                </Button>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search for help..."
-            className="pl-9"
-          />
-        </div>
+        {/* Main Content */}
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-semibold">
+              {selectedCategory
+                ? categories.find(c => c.id === selectedCategory)?.name
+                : searchQuery
+                ? 'Search Results'
+                : 'Help Center'}
+            </h1>
+          </div>
 
-        <div className="flex space-x-4 overflow-x-auto pb-2">
-          {categories.map((category) => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleCategorySelect(category)}
-              className="capitalize"
-            >
-              {category}
-            </Button>
-          ))}
-        </div>
-
-        <ScrollArea className="h-[calc(100vh-20rem)]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={selectedCategory || 'all'}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-              className="grid gap-4"
-            >
-              {articles.map((article) => (
+          {/* Articles */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <AnimatePresence mode="wait">
+              {articles.length === 0 ? (
                 <motion.div
-                  key={article.id}
-                  layout
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
+                  className="col-span-full flex flex-col items-center justify-center p-8 text-center"
                 >
-                  <Card
-                    className="p-6 cursor-pointer hover:bg-muted/50 transition-colors"
-                    onClick={() => setSelectedArticle(article)}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <h3 className="font-medium">{article.title}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {article.description}
-                        </p>
-                        <div className="flex items-center space-x-2">
-                          {article.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary/10 text-primary"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                  </Card>
+                  <HelpCircle className="h-12 w-12 text-muted-foreground/20" />
+                  <h3 className="mt-4 text-lg font-medium">No articles found</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Try adjusting your search or browse through our categories
+                  </p>
                 </motion.div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
-        </ScrollArea>
-
-        <Dialog open={!!selectedArticle} onOpenChange={() => setSelectedArticle(null)}>
-          <DialogContent className="max-w-2xl">
-            {selectedArticle && (
-              <>
-                <DialogHeader>
-                  <DialogTitle>{selectedArticle.title}</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <p className="text-muted-foreground">{selectedArticle.content}</p>
-                  
-                  <div className="space-y-2">
-                    <h4 className="font-medium">Related Articles</h4>
-                    <div className="space-y-2">
-                      {helpService.getRelatedArticles(selectedArticle).map((related) => (
-                        <Button
-                          key={related.id}
-                          variant="ghost"
-                          className="w-full justify-start"
-                          onClick={() => setSelectedArticle(related)}
-                        >
-                          {related.title}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end space-x-2">
-                    <Button variant="outline" onClick={() => setSelectedArticle(null)}>
-                      Close
+              ) : (
+                articles.map((article) => (
+                  <motion.div
+                    key={article.id}
+                    layout
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full h-auto p-4 flex flex-col items-start space-y-2",
+                        selectedArticle?.id === article.id && "ring-2 ring-primary"
+                      )}
+                      onClick={() => setSelectedArticle(article)}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <h3 className="font-medium text-left">{article.title}</h3>
+                        <Badge variant="secondary" className="ml-2">
+                          {article.category}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground text-left line-clamp-2">
+                        {article.excerpt}
+                      </p>
                     </Button>
-                    <Button>Contact Support</Button>
+                  </motion.div>
+                ))
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Selected Article */}
+          <AnimatePresence>
+            {selectedArticle && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm p-4 md:p-6 overflow-y-auto"
+              >
+                <div className="container mx-auto max-w-3xl bg-background rounded-lg shadow-lg">
+                  <div className="p-6 space-y-4">
+                    <Button
+                      variant="ghost"
+                      className="mb-4"
+                      onClick={() => setSelectedArticle(null)}
+                    >
+                      ← Back to articles
+                    </Button>
+                    <h2 className="text-2xl font-semibold">{selectedArticle.title}</h2>
+                    <div className="prose dark:prose-invert max-w-none">
+                      {selectedArticle.content}
+                    </div>
                   </div>
                 </div>
-              </>
+              </motion.div>
             )}
-          </DialogContent>
-        </Dialog>
+          </AnimatePresence>
+        </div>
       </div>
-    </PageTransition>
+    </div>
   );
-}
+};
