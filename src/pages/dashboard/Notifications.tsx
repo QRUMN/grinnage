@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { useNotificationStore } from '@/lib/stores/notificationStore';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/Badge';
 import { Bell, Check, Trash2, AlertTriangle, Info } from 'lucide-react';
 
 export const Notifications = () => {
