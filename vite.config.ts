@@ -19,11 +19,28 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-label', '@radix-ui/react-select'],
           'animation-vendor': ['framer-motion'],
+          'utils-vendor': ['date-fns', 'fuse.js', 'zustand'],
         },
       },
     },
+    commonjsOptions: {
+      include: [/node_modules/],
+      extensions: ['.js', '.cjs'],
+    },
   },
   optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'framer-motion',
+      'date-fns',
+      'fuse.js',
+      'zustand',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-label',
+      '@radix-ui/react-select',
+    ],
     exclude: ['lucide-react'],
   },
   test: {
