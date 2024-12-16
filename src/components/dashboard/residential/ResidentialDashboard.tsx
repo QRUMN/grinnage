@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '../common/DashboardLayout';
 import { SideNav } from '../common/SideNav';
 import { Overview } from '../../../pages/dashboard/Overview';
@@ -8,6 +8,9 @@ import { Billing } from '../../../pages/dashboard/Billing';
 import { Documents } from '../../../pages/dashboard/Documents';
 import { Settings } from '../../../pages/dashboard/Settings';
 import { MediaUpload } from '../../../pages/dashboard/MediaUpload';
+import { Notifications } from '../../../pages/dashboard/Notifications';
+import { Alerts } from '../../../pages/dashboard/Alerts';
+import { Help } from '../../../pages/dashboard/Help';
 import {
   Home,
   Calendar,
@@ -29,6 +32,7 @@ import cn from 'classnames';
 export const ResidentialDashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
+  const navigate = useNavigate();
   const basePath = '/dashboard';
 
   const navItems = [
@@ -138,31 +142,43 @@ export const ResidentialDashboard = () => {
   ];
 
   const header = (
-    <div className="px-8 py-6 bg-white border-b">
+    <div className="px-8 py-6 bg-background border-b border-border">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">
             Manage your residential pest control services
           </p>
         </div>
         <div className="flex items-center space-x-4">
-          <button className="p-2 text-gray-400 hover:text-gray-500">
+          <button 
+            onClick={() => navigate(`${basePath}/help`)}
+            className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
             <HelpCircle className="h-6 w-6" />
           </button>
-          <button className="relative p-2 text-gray-400 hover:text-gray-500">
+          <button 
+            onClick={() => navigate(`${basePath}/alerts`)}
+            className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
             <AlertTriangle className="h-6 w-6" />
-            <span className="absolute top-0 right-0 h-4 w-4 text-xs flex items-center justify-center bg-yellow-500 text-white rounded-full">
+            <span className="absolute top-0 right-0 h-4 w-4 text-xs flex items-center justify-center bg-warning text-warning-foreground rounded-full">
               2
             </span>
           </button>
-          <button className="relative p-2 text-gray-400 hover:text-gray-500">
+          <button 
+            onClick={() => navigate(`${basePath}/notifications`)}
+            className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
             <Bell className="h-6 w-6" />
-            <span className="absolute top-0 right-0 h-4 w-4 text-xs flex items-center justify-center bg-red-500 text-white rounded-full">
+            <span className="absolute top-0 right-0 h-4 w-4 text-xs flex items-center justify-center bg-destructive text-destructive-foreground rounded-full">
               3
             </span>
           </button>
-          <button className="relative p-2 text-gray-400 hover:text-gray-500">
+          <button 
+            onClick={() => navigate(`${basePath}/settings/profile`)}
+            className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
             <UserCircle className="h-6 w-6" />
           </button>
         </div>
@@ -171,10 +187,10 @@ export const ResidentialDashboard = () => {
   );
 
   const sidebar = (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-background border-r border-border">
       <div className={cn("p-6", sidebarCollapsed ? "px-4" : "")}>
         <h2 className={cn(
-          "font-semibold transition-all",
+          "font-semibold transition-all text-foreground",
           sidebarCollapsed ? "text-center text-sm" : "text-lg"
         )}>
           {sidebarCollapsed ? "RP" : "Residential Portal"}
@@ -190,7 +206,7 @@ export const ResidentialDashboard = () => {
         />
       </div>
       <div className={cn(
-        "p-4 border-t mt-auto",
+        "p-4 border-t border-border mt-auto",
         sidebarCollapsed ? "text-center" : ""
       )}>
         <div className="flex items-center space-x-3">
@@ -198,13 +214,13 @@ export const ResidentialDashboard = () => {
             "flex items-center space-x-3",
             sidebarCollapsed ? "justify-center" : ""
           )}>
-            <div className="h-8 w-8 bg-primary/10 rounded-full flex items-center justify-center">
+            <div className="h-8 w-8 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center">
               <Clock className="h-4 w-4 text-primary" />
             </div>
             {!sidebarCollapsed && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium">Next Service</p>
-                <p className="text-xs text-gray-500 truncate">Dec 20, 2024 at 10:00 AM</p>
+                <p className="text-sm font-medium text-foreground">Next Service</p>
+                <p className="text-xs text-muted-foreground truncate">Dec 20, 2024 at 10:00 AM</p>
               </div>
             )}
           </div>
@@ -227,7 +243,7 @@ export const ResidentialDashboard = () => {
 
   return (
     <DashboardLayout sidebar={sidebar} header={header}>
-      <div className="bg-white rounded-lg shadow-sm">
+      <div className="bg-background rounded-lg shadow-sm">
         <Routes>
           <Route index element={<Overview />} />
           <Route path="appointments/*" element={<Appointments />} />
@@ -235,6 +251,9 @@ export const ResidentialDashboard = () => {
           <Route path="documents/*" element={<Documents />} />
           <Route path="media" element={<MediaUpload />} />
           <Route path="settings/*" element={<Settings />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="alerts" element={<Alerts />} />
+          <Route path="help" element={<Help />} />
         </Routes>
       </div>
     </DashboardLayout>
