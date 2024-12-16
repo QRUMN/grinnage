@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertTriangle, Shield, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
