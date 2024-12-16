@@ -28,11 +28,13 @@ import {
   UserCircle,
 } from 'lucide-react';
 import cn from 'classnames';
+import { useNotificationStore } from '@/lib/stores/notificationStore';
 
 export const ResidentialDashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
   const navigate = useNavigate();
+  const { getUnreadCount, getActiveAlertsCount } = useNotificationStore();
   const basePath = '/dashboard';
 
   const navItems = [
@@ -162,18 +164,22 @@ export const ResidentialDashboard = () => {
             className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <AlertTriangle className="h-6 w-6" />
-            <span className="absolute top-0 right-0 h-4 w-4 text-xs flex items-center justify-center bg-warning text-warning-foreground rounded-full">
-              2
-            </span>
+            {getActiveAlertsCount() > 0 && (
+              <span className="absolute top-0 right-0 h-4 w-4 text-xs flex items-center justify-center bg-warning text-warning-foreground rounded-full">
+                {getActiveAlertsCount()}
+              </span>
+            )}
           </button>
           <button 
             onClick={() => navigate(`${basePath}/notifications`)}
             className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <Bell className="h-6 w-6" />
-            <span className="absolute top-0 right-0 h-4 w-4 text-xs flex items-center justify-center bg-destructive text-destructive-foreground rounded-full">
-              3
-            </span>
+            {getUnreadCount() > 0 && (
+              <span className="absolute top-0 right-0 h-4 w-4 text-xs flex items-center justify-center bg-destructive text-destructive-foreground rounded-full">
+                {getUnreadCount()}
+              </span>
+            )}
           </button>
           <button 
             onClick={() => navigate(`${basePath}/settings/profile`)}
