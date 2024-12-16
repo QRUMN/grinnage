@@ -7,8 +7,15 @@ import { authApi } from '../../../lib/api/auth';
 import { ThemeToggle } from '../../layout/ThemeToggle';
 import { useAtomValue } from 'jotai';
 import { authStateAtom } from '../../../store/auth';
+import { cn } from '../../../lib/utils';
 
-export const DashboardLayout = ({ children }: { children?: React.ReactNode }) => {
+interface DashboardLayoutProps {
+  children?: React.ReactNode;
+  sidebar?: React.ReactNode;
+  header?: React.ReactNode;
+}
+
+export const DashboardLayout = ({ children, sidebar, header }: DashboardLayoutProps) => {
   const navigate = useNavigate();
   const { user } = useAtomValue(authStateAtom);
 
@@ -27,27 +34,40 @@ export const DashboardLayout = ({ children }: { children?: React.ReactNode }) =>
         { icon: <Settings className="w-5 h-5" />, label: 'Settings', href: '/admin/settings' }
       ];
     }
-
-    // Return other navigation items for different roles
     return [];
   };
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-dark-900">
-      <Sidebar navItems={getNavItems()} onLogout={handleLogout} />
-      <main className="flex-1 overflow-y-auto p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-end mb-6">
-            <ThemeToggle />
+      {sidebar ? (
+        <aside className="w-64 border-r bg-white dark:bg-dark-800">
+          {sidebar}
+        </aside>
+      ) : (
+        <Sidebar navItems={getNavItems()} onLogout={handleLogout} />
+      )}
+      
+      <main className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-shrink-0">
+          {header}
+          <div className="px-8 py-4 border-b bg-white dark:bg-dark-800">
+            <div className="flex justify-end">
+              <ThemeToggle />
+            </div>
           </div>
-          {children || <Outlet />}
-          <button 
-            onClick={handleLogout}
-            className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50"
-          >
-            <LogOut className="h-5 w-5 mr-2" />
-            <span>Logout</span>
-          </button>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto p-8">
+          <div className="max-w-7xl mx-auto">
+            {children || <Outlet />}
+            <button 
+              onClick={handleLogout}
+              className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50"
+            >
+              <LogOut className="h-5 w-5 mr-2" />
+              <span>Logout</span>
+            </button>
+          </div>
         </div>
       </main>
     </div>
