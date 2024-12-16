@@ -4,6 +4,19 @@ export const phoneRegex = /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/
 export const zipCodeRegex = /^\d{5}(-\d{4})?$/;
 export const stateRegex = /^[A-Z]{2}$/;
 
+export const userRoles = [
+  "RESIDENTIAL_CUSTOMER",
+  "COMMERCIAL_CUSTOMER",
+  "ADMINISTRATOR",
+  "TECHNICIAN",
+  "MANAGER",
+  "SUPPORT",
+  "VENDOR",
+  "CONTRACTOR",
+  "BILLING_ADMIN",
+  "QUALITY_INSPECTOR"
+] as const;
+
 export const userSchema = z.object({
   firstName: z.string()
     .min(2, 'First name must be at least 2 characters')
@@ -23,7 +36,7 @@ export const userSchema = z.object({
   phone: z.string()
     .regex(phoneRegex, 'Invalid phone number format. Use (XXX) XXX-XXXX'),
   
-  role: z.enum(['residential', 'commercial', 'admin', 'technician', 'manager', 'support']),
+  role: z.enum(userRoles),
   
   address: z.string()
     .min(5, 'Address must be at least 5 characters')
@@ -68,6 +81,14 @@ export const userSchema = z.object({
       .default(true)
       .describe('Use same as service address'),
   }).optional(),
+  
+  documents: z.array(z.object({
+    id: z.string().optional(),
+    name: z.string(),
+    url: z.string().url(),
+    type: z.enum(["ID", "LICENSE", "INSURANCE", "CONTRACT", "OTHER"]),
+    uploadedAt: z.date().optional(),
+  })).optional(),
 });
 
 export type UserFormData = z.infer<typeof userSchema>;

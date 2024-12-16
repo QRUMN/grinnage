@@ -9,6 +9,9 @@ import { toast } from 'sonner';
 import { userSchema, type UserFormData } from '../../../../lib/validations/user';
 import { userService } from '../../../../lib/services/userService';
 import { Loader2 } from 'lucide-react';
+import InputMask from 'react-input-mask';
+import { useLoadScript, Autocomplete } from '@react-google-maps/api';
+import { FileUpload } from './FileUpload';
 
 interface AddUserDialogProps {
   isOpen: boolean;
@@ -35,6 +38,7 @@ const initialFormData: UserFormData = {
     paymentMethod: 'credit',
     billingAddress: true,
   },
+  documents: [],
 };
 
 export function AddUserDialog({ isOpen, onClose, onUserAdded }: AddUserDialogProps) {
@@ -42,6 +46,11 @@ export function AddUserDialog({ isOpen, onClose, onUserAdded }: AddUserDialogPro
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+    libraries: ['places'],
+  });
+  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -58,6 +67,32 @@ export function AddUserDialog({ isOpen, onClose, onUserAdded }: AddUserDialogPro
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handlePlaceSelect = () => {
+    if (autocomplete) {
+      const place = autocomplete.getPlace();
+      const addressComponents = place.address_components || [];
+      
+      let streetNumber = '', route = '', city = '', state = '', zipCode = '';
+      
+      addressComponents.forEach(component => {
+        const types = component.types;
+        if (types.includes('street_number')) {
+          streetNumber = component.long_name;
+        } else if (types.includes('route')) {
+          route = component.long_name;
+        } else if (types.includes('locality')) {
+          city = component.long_name;
+        } else if (types.includes('administrative_area_level_1')) {
+          state = component.short_name;
+        } else if (types.includes('postal_code')) {
+          zipCode = component.long_name;
+        }
+      });
+
+      setFormData((prev) => ({ ...prev, address: `${streetNumber} ${route}`.trim(), city, state, zipCode }));
     }
   };
 
@@ -116,6 +151,10 @@ export function AddUserDialog({ isOpen, onClose, onUserAdded }: AddUserDialogPro
     }
   };
 
+  const handleFileUpload = (url: string, name: string) => {
+    setFormData((prev) => ({ ...prev, documents: [...prev.documents, { name, url, type: 'OTHER', uploadedAt: new Date() }] }));
+  };
+
   const renderStep1 = () => (
     <>
       <div className="grid grid-cols-2 gap-4">
@@ -167,10 +206,8 @@ export function AddUserDialog({ isOpen, onClose, onUserAdded }: AddUserDialogPro
         </div>
         <div className="space-y-2">
           <Label htmlFor="phone">Phone *</Label>
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
+          <InputMask
+            mask="(999) 999-9999"
             value={formData.phone}
             onChange={handleInputChange}
             error={errors.phone}
@@ -228,36 +265,34 @@ export function AddUserDialog({ isOpen, onClose, onUserAdded }: AddUserDialogPro
 
   const renderStep2 = () => (
     <>
+      {isLoaded && (
+        <Autocomplete
+          onLoad={setAutocomplete}
+          onPlaceChanged={handlePlaceSelect}
+        >
+          <input
+            type="text"
+            placeholder="Search for address..."
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          />
+        </Autocomplete>
+      )}
       <div className="space-y-2">
-        <Label htmlFor="address">Address *</Label>
+        <Label htmlFor="city">City *</Label>
         <Input
-          id="address"
-          name="address"
-          value={formData.address}
+          id="city"
+          name="city"
+          value={formData.city}
           onChange={handleInputChange}
-          error={errors.address}
+          error={errors.city}
           required
         />
-        {errors.address && (
-          <p className="text-sm text-red-500">{errors.address}</p>
+        {errors.city && (
+          <p className="text-sm text-red-500">{errors.city}</p>
         )}
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="city">City *</Label>
-          <Input
-            id="city"
-            name="city"
-            value={formData.city}
-            onChange={handleInputChange}
-            error={errors.city}
-            required
-          />
-          {errors.city && (
-            <p className="text-sm text-red-500">{errors.city}</p>
-          )}
-        </div>
         <div className="space-y-2">
           <Label htmlFor="state">State *</Label>
           <Input
@@ -276,9 +311,9 @@ export function AddUserDialog({ isOpen, onClose, onUserAdded }: AddUserDialogPro
         </div>
         <div className="space-y-2">
           <Label htmlFor="zipCode">ZIP Code *</Label>
-          <Input
-            id="zipCode"
-            name="zipCode"
+          <InputMask
+            mask="99999-9999"
+            maskChar={null}
             value={formData.zipCode}
             onChange={handleInputChange}
             error={errors.zipCode}
@@ -368,6 +403,30 @@ export function AddUserDialog({ isOpen, onClose, onUserAdded }: AddUserDialogPro
             <SelectItem value="cash">Cash</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Documents</Label>
+        <FileUpload
+          onUploadComplete={handleFileUpload}
+        />
+        <div className="mt-2">
+          {formData.documents?.map((doc, index) => (
+            <div key={index} className="flex items-center justify-between py-2">
+              <span className="text-sm">{doc.name}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const docs = formData.documents || [];
+                  setFormData((prev) => ({ ...prev, documents: docs.filter((_, i) => i !== index) }));
+                }}
+                className="text-destructive hover:text-destructive/90"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
