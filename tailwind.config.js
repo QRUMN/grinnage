@@ -31,6 +31,17 @@ module.exports = {
         '2xl': '1536px',
       },
       colors: {
+        dark: {
+          900: '#121212',
+          800: '#1e1e1e',
+          700: '#2d2d2d',
+          600: '#3d3d3d',
+          500: '#4d4d4d',
+          400: '#5c5c5c',
+          300: '#6b6b6b',
+          200: '#7a7a7a',
+          100: '#8a8a8a',
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
