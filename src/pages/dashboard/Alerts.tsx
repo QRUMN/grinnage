@@ -2,7 +2,6 @@ import React from 'react';
 import { AlertTriangle, Shield, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 export function Alerts() {
@@ -51,7 +50,10 @@ export function Alerts() {
       <ScrollArea className="h-[calc(100vh-12rem)]">
         <div className="space-y-4">
           {alerts.map((alert) => (
-            <Card key={alert.id} className="p-4">
+            <div
+              key={alert.id}
+              className="p-4 bg-white dark:bg-dark-800 rounded-lg shadow-sm border border-border"
+            >
               <div className="flex items-start space-x-4">
                 {getSeverityIcon(alert.severity)}
                 <div className="flex-1 space-y-1">
@@ -63,7 +65,7 @@ export function Alerts() {
                   Dismiss
                 </Button>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       </ScrollArea>
