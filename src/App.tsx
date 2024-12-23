@@ -8,6 +8,7 @@ import { OnboardingPage } from './pages/OnboardingPage';
 import { AuthGuard } from './components/auth/AuthGuard';
 import { Wallet } from './components/wallet/Wallet';
 import { AdminWallet } from './pages/dashboard/admin/AdminWallet';
+import { useTheme } from './hooks/useTheme';
 
 // Dashboard Pages
 import { ResidentialDashboard } from './pages/dashboard/residential/ResidentialDashboard';
@@ -21,64 +22,72 @@ import { Settings } from './pages/dashboard/Settings';
 import { Notifications } from './pages/dashboard/Notifications';
 import { Alerts } from './pages/dashboard/Alerts';
 
-const App = () => {
+function App() {
+  const { mounted } = useTheme();
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Layout><HomePage /></Layout>} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/onboarding" element={<OnboardingPage />} />
+      <div className="min-h-screen bg-white dark:bg-gray-900">
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Layout><HomePage /></Layout>} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/onboarding" element={<OnboardingPage />} />
 
-        {/* Residential Dashboard */}
-        <Route path="/dashboard" element={
-          <AuthGuard allowedRoles={['residential']}>
-            <DashboardLayout />
-          </AuthGuard>
-        }>
-          <Route index element={<ResidentialDashboard />} />
-          <Route path="appointments" element={<Appointments />} />
-          <Route path="documents" element={<Documents />} />
-          <Route path="billing" element={<Billing />} />
-          <Route path="wallet" element={<Wallet />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="notifications" element={<Notifications />} />
-          <Route path="alerts" element={<Alerts />} />
-        </Route>
+          {/* Residential Dashboard */}
+          <Route path="/dashboard" element={
+            <AuthGuard allowedRoles={['residential']}>
+              <DashboardLayout />
+            </AuthGuard>
+          }>
+            <Route index element={<ResidentialDashboard />} />
+            <Route path="appointments" element={<Appointments />} />
+            <Route path="documents" element={<Documents />} />
+            <Route path="billing" element={<Billing />} />
+            <Route path="wallet" element={<Wallet />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="alerts" element={<Alerts />} />
+          </Route>
 
-        {/* Commercial Dashboard */}
-        <Route path="/commercial" element={
-          <AuthGuard allowedRoles={['commercial']}>
-            <DashboardLayout />
-          </AuthGuard>
-        }>
-          <Route index element={<CommercialDashboard />} />
-          <Route path="properties" element={<Overview />} />
-          <Route path="contracts" element={<Documents />} />
-          <Route path="billing" element={<Billing />} />
-          <Route path="wallet" element={<Wallet />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="reports" element={<Overview />} />
-        </Route>
+          {/* Commercial Dashboard */}
+          <Route path="/commercial" element={
+            <AuthGuard allowedRoles={['commercial']}>
+              <DashboardLayout />
+            </AuthGuard>
+          }>
+            <Route index element={<CommercialDashboard />} />
+            <Route path="properties" element={<Overview />} />
+            <Route path="contracts" element={<Documents />} />
+            <Route path="billing" element={<Billing />} />
+            <Route path="wallet" element={<Wallet />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="reports" element={<Overview />} />
+          </Route>
 
-        {/* Admin Dashboard */}
-        <Route path="/admin" element={
-          <AuthGuard allowedRoles={['admin']}>
-            <DashboardLayout />
-          </AuthGuard>
-        }>
-          <Route index element={<AdminDashboard />} />
-          <Route path="users" element={<Overview />} />
-          <Route path="properties" element={<Overview />} />
-          <Route path="reports" element={<Overview />} />
-          <Route path="wallet" element={<AdminWallet />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="logs" element={<Overview />} />
-        </Route>
+          {/* Admin Dashboard */}
+          <Route path="/admin" element={
+            <AuthGuard allowedRoles={['admin']}>
+              <DashboardLayout />
+            </AuthGuard>
+          }>
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<Overview />} />
+            <Route path="properties" element={<Overview />} />
+            <Route path="reports" element={<Overview />} />
+            <Route path="wallet" element={<AdminWallet />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="logs" element={<Overview />} />
+          </Route>
 
-        {/* Catch all */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+          {/* Catch all */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </div>
     </Router>
   );
 };

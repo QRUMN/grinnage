@@ -18,6 +18,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 const getNavItems = (role: string) => {
   switch (role) {
@@ -63,48 +64,56 @@ export const DashboardLayout = () => {
   const navItems = getNavItems(user?.role || '');
 
   return (
-    <div className="flex h-screen">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
-      <div className="w-64 bg-white border-r">
-        <div className="h-16 flex items-center px-6 border-b">
-          <h1 className="text-xl font-bold">
-            {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)} Dashboard
-          </h1>
-        </div>
-        <nav className="p-4 space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
+      <aside className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col h-full">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+            <h1 className="text-xl font-bold">
+              {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)} Dashboard
+            </h1>
+          </div>
+          <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+            {navItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
-                className={cn(
-                  'flex items-center px-4 py-2 text-sm rounded-md transition-colors',
+                className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg ${
                   pathname === item.href
-                    ? 'bg-primary text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                )}
+                    ? 'bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
               >
-                <Icon className="w-5 h-5 mr-3" />
+                <item.icon className="w-5 h-5 mr-3" />
                 {item.name}
               </Link>
-            );
-          })}
-        </nav>
-      </div>
+            ))}
+          </nav>
+
+          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{user?.name}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{user?.role}</p>
+              </div>
+              <ThemeToggle />
+            </div>
+          </div>
+        </div>
+      </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-0">
-        <header className="h-16 border-b bg-white flex items-center px-6">
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-500">Welcome back,</span>
-            <span className="font-medium">{user?.name}</span>
-          </div>
-        </header>
-        <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
+      <main className="pl-64">
+        <div className="p-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
+          <header className="h-16 border-b bg-white dark:bg-gray-800 flex items-center px-6">
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-500 dark:text-gray-400">Welcome back,</span>
+              <span className="font-medium">{user?.name}</span>
+            </div>
+          </header>
           <Outlet />
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 };
