@@ -15,12 +15,27 @@ interface AuthState {
   error: string | null;
 }
 
-export const authStateAtom = atom<AuthState>({
+const initialState: AuthState = {
   isAuthenticated: false,
   loading: true,
   user: null,
   error: null,
-});
+};
+
+export const authStateAtom = atom<AuthState>(initialState);
+
+// Write-only atom for setting user
+export const setUserAtom = atom(
+  null,
+  (get, set, user: User | null) => {
+    set(authStateAtom, {
+      isAuthenticated: !!user,
+      loading: false,
+      user,
+      error: null,
+    });
+  }
+);
 
 // Auth actions
 export const login = async (email: string, password: string) => {
@@ -46,7 +61,6 @@ export const login = async (email: string, password: string) => {
 };
 
 export const logout = () => {
-  // Add your logout logic here
   localStorage.removeItem('token');
-  return authStateAtom.set({ isAuthenticated: false, loading: false, user: null, error: null });
+  return authStateAtom.set(initialState);
 };

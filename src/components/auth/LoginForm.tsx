@@ -7,6 +7,7 @@ import { FormInput } from '../common/form';
 import { useSetAtom } from 'jotai';
 import { setUserAtom } from '../../store/auth';
 import { authApi } from '../../lib/api/auth';
+import { toast } from 'sonner';
 
 interface LoginError {
   message: string;
@@ -33,25 +34,27 @@ export const LoginForm = () => {
       const response = await authApi.login(data);
       setUser(response.user);
       
+      // Show success message
+      toast.success('Successfully logged in!');
+      
       // Redirect based on user type
-      switch (response.user.role) {
-        case 'admin':
-          navigate('/admin/dashboard');
-          break;
-        case 'commercial':
-          navigate('/commercial/dashboard');
-          break;
-        default:
-          navigate('/dashboard');
-      }
+      const dashboardPaths = {
+        admin: '/admin',
+        commercial: '/commercial',
+        residential: '/dashboard'
+      };
+      
+      navigate(dashboardPaths[response.user.role] || '/dashboard');
     } catch (error) {
       const loginError = error as LoginError;
-      setError('root', { message: loginError.message || 'An error occurred during login' });
+      const errorMessage = loginError.message || 'An error occurred during login';
+      setError('root', { message: errorMessage });
+      toast.error(errorMessage);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">User Type</label>
         <div className="flex space-x-4">
@@ -86,33 +89,31 @@ export const LoginForm = () => {
       </div>
 
       <FormInput
-        label="Email address"
+        label="Email"
         type="email"
-        autoComplete="email"
         {...register('email')}
         error={errors.email?.message}
       />
-
+      
       <FormInput
         label="Password"
         type="password"
-        autoComplete="current-password"
         {...register('password')}
         error={errors.password?.message}
       />
 
       {errors.root && (
-        <div className="text-center bg-red-50 p-3 rounded-lg">
-          <p className="text-sm text-red-600">{errors.root.message}</p>
+        <div className="text-sm text-red-500 mt-2">
+          {errors.root.message}
         </div>
       )}
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#56e39f] hover:bg-[#33d789] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#56e39f] disabled:opacity-50"
+        className="w-full px-4 py-2 text-white bg-primary rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isSubmitting ? 'Signing in...' : 'Sign in'}
+        {isSubmitting ? 'Logging in...' : 'Login'}
       </button>
 
       <div className="mt-4 text-center text-sm text-gray-600">
