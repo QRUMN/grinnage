@@ -54,37 +54,42 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">User Type</label>
-        <div className="flex space-x-4">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              value="residential"
-              {...register('userType')}
-              className="h-4 w-4 text-[#56e39f] border-gray-300 focus:ring-[#56e39f]"
-            />
-            <span className="ml-2 text-sm text-gray-700">Residential</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              value="commercial"
-              {...register('userType')}
-              className="h-4 w-4 text-[#56e39f] border-gray-300 focus:ring-[#56e39f]"
-            />
-            <span className="ml-2 text-sm text-gray-700">Commercial</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              value="admin"
-              {...register('userType')}
-              className="h-4 w-4 text-[#56e39f] border-gray-300 focus:ring-[#56e39f]"
-            />
-            <span className="ml-2 text-sm text-gray-700">Admin</span>
-          </label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div>
+        <label className="text-base font-medium text-gray-900">User Type</label>
+        <div className="mt-2 space-y-4">
+          <div className="flex items-center space-x-6">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                value="residential"
+                {...register('userType')}
+                className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+              />
+              <span className="ml-2">Residential</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                value="commercial"
+                {...register('userType')}
+                className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+              />
+              <span className="ml-2">Commercial</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                value="admin"
+                {...register('userType')}
+                className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+              />
+              <span className="ml-2">Admin</span>
+            </label>
+          </div>
+          {errors.userType && (
+            <p className="text-sm text-red-500">{errors.userType.message}</p>
+          )}
         </div>
       </div>
 
@@ -94,7 +99,7 @@ export const LoginForm = () => {
         {...register('email')}
         error={errors.email?.message}
       />
-      
+
       <FormInput
         label="Password"
         type="password"
@@ -102,19 +107,19 @@ export const LoginForm = () => {
         error={errors.password?.message}
       />
 
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isSubmitting ? 'Signing in...' : 'Sign in'}
+      </button>
+
       {errors.root && (
         <div className="text-sm text-red-500 mt-2">
           {errors.root.message}
         </div>
       )}
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full px-4 py-2 text-white bg-primary rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isSubmitting ? 'Logging in...' : 'Login'}
-      </button>
 
       <div className="mt-4 text-center text-sm text-gray-600">
         <p>Demo Accounts:</p>
