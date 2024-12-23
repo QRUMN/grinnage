@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { OnboardingPage } from './pages/OnboardingPage';
 import { AuthGuard } from './components/auth/AuthGuard';
+import { Wallet } from './components/wallet/Wallet';
 
 // Dashboard Pages
 import { ResidentialDashboard } from './pages/dashboard/residential/ResidentialDashboard';
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="appointments" element={<Appointments />} />
           <Route path="documents" element={<Documents />} />
           <Route path="billing" element={<Billing />} />
+          <Route path="wallet" element={<Wallet />} />
           <Route path="settings" element={<Settings />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="alerts" element={<Alerts />} />
@@ -53,6 +55,7 @@ const App = () => {
           <Route path="properties" element={<Overview />} />
           <Route path="contracts" element={<Documents />} />
           <Route path="billing" element={<Billing />} />
+          <Route path="wallet" element={<Wallet />} />
           <Route path="settings" element={<Settings />} />
           <Route path="reports" element={<Overview />} />
         </Route>
