@@ -1,6 +1,6 @@
 import React from 'react';
-import { ScrollArea } from '../ui/ScrollArea';
-import { Badge } from '../ui/Badge';
+import { ScrollArea } from '@/components/ui/ScrollArea';
+import { Badge } from '@/components/ui/Badge';
 import { CreditCard, Trash2 } from 'lucide-react';
 
 const mockPaymentMethods = [

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card } from '../ui/Card';
-import { Badge } from '../ui/Badge';
-import { ScrollArea } from '../ui/ScrollArea';
+import { Card } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { ScrollArea } from '@/components/ui/ScrollArea';
 import { PaymentMethodList } from './PaymentMethodList';
 import { TransactionHistory } from './TransactionHistory';
 import { WalletBalance } from './WalletBalance';
