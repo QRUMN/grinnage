@@ -64,7 +64,7 @@ export const LoginForm = () => {
                 type="radio"
                 value="residential"
                 {...register('userType')}
-                className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                className="h-4 w-4 border-gray-300 text-[#56e39f] focus:ring-[#56e39f]"
               />
               <span className="ml-2">Residential</span>
             </label>
@@ -73,7 +73,7 @@ export const LoginForm = () => {
                 type="radio"
                 value="commercial"
                 {...register('userType')}
-                className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                className="h-4 w-4 border-gray-300 text-[#56e39f] focus:ring-[#56e39f]"
               />
               <span className="ml-2">Commercial</span>
             </label>
@@ -82,7 +82,7 @@ export const LoginForm = () => {
                 type="radio"
                 value="admin"
                 {...register('userType')}
-                className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
+                className="h-4 w-4 border-gray-300 text-[#56e39f] focus:ring-[#56e39f]"
               />
               <span className="ml-2">Admin</span>
             </label>
@@ -110,7 +110,7 @@ export const LoginForm = () => {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#56e39f] hover:bg-[#33d789] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#56e39f] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? 'Signing in...' : 'Sign in'}
       </button>
