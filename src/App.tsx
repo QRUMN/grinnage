@@ -7,6 +7,7 @@ import { LoginPage } from './pages/LoginPage';
 import { OnboardingPage } from './pages/OnboardingPage';
 import { AuthGuard } from './components/auth/AuthGuard';
 import { Wallet } from './components/wallet/Wallet';
+import { AdminWallet } from './pages/dashboard/admin/AdminWallet';
 
 // Dashboard Pages
 import { ResidentialDashboard } from './pages/dashboard/residential/ResidentialDashboard';
@@ -70,6 +71,7 @@ const App = () => {
           <Route path="users" element={<Overview />} />
           <Route path="properties" element={<Overview />} />
           <Route path="reports" element={<Overview />} />
+          <Route path="wallet" element={<AdminWallet />} />
           <Route path="settings" element={<Settings />} />
           <Route path="logs" element={<Overview />} />
         </Route>

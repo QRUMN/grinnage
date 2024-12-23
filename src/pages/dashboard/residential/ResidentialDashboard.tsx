@@ -1,9 +1,8 @@
 import React from 'react';
 import { useAtomValue } from 'jotai';
-import { authStateAtom } from '../../../store/auth';
-import { Card } from '../../../components/ui/Card';
-import { ScrollArea } from '../../../components/ui/ScrollArea';
-import { Badge } from '../../../components/ui/Badge';
+import { authStateAtom } from '@/store/auth';
+import { Card } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
 
 export const ResidentialDashboard = () => {
   const { user } = useAtomValue(authStateAtom);
@@ -13,67 +12,96 @@ export const ResidentialDashboard = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold">Welcome back, {user?.name}</h1>
-          <p className="text-gray-500">Here's what's happening with your property</p>
+          <h1 className="text-2xl font-bold text-gray-900">Welcome back, {user?.name}</h1>
+          <p className="text-gray-600">Here's what's happening with your property</p>
         </div>
         <Badge variant="success">Residential Account</Badge>
       </div>
 
-      {/* Quick Stats */}
+      {/* Quick Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-6">
-          <h3 className="font-semibold text-gray-500">Next Service</h3>
-          <p className="text-2xl font-bold mt-2">Jan 15, 2024</p>
-          <p className="text-sm text-gray-500">Lawn Maintenance</p>
+        {/* Next Service */}
+        <Card className="p-6 bg-white shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Next Service</h2>
+          <div className="space-y-4">
+            <div>
+              <p className="text-base font-medium text-gray-900">Lawn Maintenance</p>
+              <p className="text-sm text-gray-600">January 15, 2024</p>
+            </div>
+          </div>
         </Card>
-        <Card className="p-6">
-          <h3 className="font-semibold text-gray-500">Active Services</h3>
-          <p className="text-2xl font-bold mt-2">3</p>
-          <p className="text-sm text-gray-500">Services this month</p>
+
+        {/* Active Services */}
+        <Card className="p-6 bg-white shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Active Services</h2>
+          <div className="space-y-4">
+            <div>
+              <p className="text-base font-medium text-gray-900">Services this month</p>
+              <div className="mt-2 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Pest Control</span>
+                  <Badge variant="success">Completed</Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Lawn Care</span>
+                  <Badge variant="info">Scheduled</Badge>
+                </div>
+              </div>
+            </div>
+          </div>
         </Card>
-        <Card className="p-6">
-          <h3 className="font-semibold text-gray-500">Service Requests</h3>
-          <p className="text-2xl font-bold mt-2">1</p>
-          <p className="text-sm text-gray-500">Pending requests</p>
+
+        {/* Service Requests */}
+        <Card className="p-6 bg-white shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Service Requests</h2>
+          <div className="space-y-4">
+            <div>
+              <p className="text-base font-medium text-gray-900">Pending requests</p>
+              <div className="mt-2 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Emergency Plumbing</span>
+                  <Badge variant="warning">Pending</Badge>
+                </div>
+              </div>
+            </div>
+          </div>
         </Card>
       </div>
 
       {/* Recent Activity */}
-      <Card className="p-6">
-        <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
-        <ScrollArea className="h-[300px]">
-          <div className="space-y-4">
-            {[1, 2, 3, 4, 5].map((_, i) => (
-              <div key={i} className="flex items-center justify-between border-b pb-4">
-                <div>
-                  <p className="font-medium">Lawn Service Completed</p>
-                  <p className="text-sm text-gray-500">December {20 - i}, 2023</p>
-                </div>
-                <Badge variant="success">Completed</Badge>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
+      <Card className="p-6 bg-white shadow-sm">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+        <div className="space-y-4">
+          {[
+            { date: 'December 20, 2023', status: 'Completed' },
+            { date: 'December 19, 2023', status: 'Completed' },
+            { date: 'December 18, 2023', status: 'Completed' },
+            { date: 'December 17, 2023', status: 'Completed' },
+          ].map((activity, index) => (
+            <div key={index} className="flex justify-between items-center py-3 border-b border-gray-100">
+              <span className="text-sm text-gray-600">{activity.date}</span>
+              <Badge variant="success">Completed</Badge>
+            </div>
+          ))}
+        </div>
       </Card>
 
       {/* Upcoming Services */}
-      <Card className="p-6">
-        <h2 className="text-lg font-semibold mb-4">Upcoming Services</h2>
+      <Card className="p-6 bg-white shadow-sm">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Services</h2>
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Lawn Maintenance</p>
-              <p className="text-sm text-gray-500">January 15, 2024</p>
+          {[
+            { date: 'January 15, 2024', service: 'Regular Maintenance' },
+            { date: 'January 22, 2024', service: 'Pest Control' },
+          ].map((service, index) => (
+            <div key={index} className="flex justify-between items-center py-3 border-b border-gray-100">
+              <div>
+                <p className="text-sm font-medium text-gray-900">{service.service}</p>
+                <p className="text-sm text-gray-600">{service.date}</p>
+              </div>
+              <Badge variant="info">Scheduled</Badge>
             </div>
-            <Badge variant="info">Scheduled</Badge>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">Tree Trimming</p>
-              <p className="text-sm text-gray-500">January 22, 2024</p>
-            </div>
-            <Badge variant="info">Scheduled</Badge>
-          </div>
+          ))}
         </div>
       </Card>
     </div>

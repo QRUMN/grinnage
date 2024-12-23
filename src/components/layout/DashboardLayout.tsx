@@ -47,8 +47,9 @@ const getNavItems = (role: string) => {
         { name: 'Dashboard', href: '/admin', icon: LayoutGrid },
         { name: 'Users', href: '/admin/users', icon: Users },
         { name: 'Properties', href: '/admin/properties', icon: Building2 },
+        { name: 'Wallet', href: '/admin/wallet', icon: Wallet },
         { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
-        { name: 'Activity', href: '/admin/logs', icon: Activity },
+        { name: 'Activity', href: '/admin/activity', icon: Activity },
         { name: 'Settings', href: '/admin/settings', icon: Settings },
       ];
     default:
