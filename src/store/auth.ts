@@ -1,25 +1,22 @@
 import { atom } from 'jotai';
-import type { UserRole } from '../types/auth';
 
-interface User {
+export type UserRole = 'residential' | 'commercial' | 'admin';
+
+export interface User {
   id: string;
   email: string;
-  role: UserRole;
   name: string;
+  role: UserRole;
 }
 
-interface AuthState {
+export interface AuthState {
   isAuthenticated: boolean;
-  loading: boolean;
   user: User | null;
-  error: string | null;
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
-  loading: true,
   user: null,
-  error: null,
 };
 
 export const authStateAtom = atom<AuthState>(initialState);
@@ -30,37 +27,28 @@ export const setUserAtom = atom(
   (get, set, user: User | null) => {
     set(authStateAtom, {
       isAuthenticated: !!user,
-      loading: false,
       user,
-      error: null,
     });
   }
 );
 
-// Auth actions
-export const login = async (email: string, password: string) => {
-  try {
-    // Add your API call here
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Login failed');
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
+export const getDashboardPath = (role: UserRole): string => {
+  switch (role) {
+    case 'residential':
+      return '/dashboard';
+    case 'commercial':
+      return '/commercial';
+    case 'admin':
+      return '/admin';
+    default:
+      return '/login';
   }
 };
 
-export const logout = () => {
+export const logout = async () => {
+  // Clear auth state
+  authStateAtom.onMount = (setAtom) => {
+    setAtom({ isAuthenticated: false, user: null });
+  };
   localStorage.removeItem('token');
-  return authStateAtom.set(initialState);
 };
