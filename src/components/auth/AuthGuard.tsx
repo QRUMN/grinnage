@@ -27,13 +27,13 @@ export const AuthGuard = ({ children, allowedRoles }: AuthGuardProps) => {
 
   if (!allowedRoles.includes(user.role)) {
     // Redirect to appropriate dashboard based on user role
-    const redirectPath = user.role === 'commercial' 
-      ? '/commercial'
-      : user.role === 'admin'
-      ? '/admin'
-      : '/dashboard';
+    const dashboardRoutes = {
+      residential: '/dashboard',
+      commercial: '/commercial',
+      admin: '/admin'
+    };
     
-    return <Navigate to={redirectPath} replace />;
+    return <Navigate to={dashboardRoutes[user.role]} replace />;
   }
 
   return <>{children}</>;
