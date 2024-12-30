@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && npm install typescript@5.0.0 --save-dev && npm run build"
+  command = "npm install && npm install typescript@5.3.3 --save-dev && npm run build"
   publish = "dist"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF . ':(exclude)package-lock.json'"
 
