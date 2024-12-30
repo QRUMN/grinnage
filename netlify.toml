@@ -1,11 +1,11 @@
 [build]
-  command = "npm ci && npm run build"
+  command = "npm install && npm install -g vite && vite build"
   publish = "dist"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF . ':(exclude)package-lock.json'"
 
 [build.environment]
   NODE_VERSION = "18"
   VITE_BUILD_MODE = "production"
+  NODE_ENV = "production"
 
 [[redirects]]
   from = "/*"
@@ -21,30 +21,8 @@
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
 
-[dev]
-  command = "npm run dev"
-  targetPort = 5173
-  port = 8888
-  publish = "dist"
-
-[context.production]
-  environment = { NODE_ENV = "production" }
-
-[context.deploy-preview]
-  environment = { NODE_ENV = "preview" }
-
-[context.branch-deploy]
-  environment = { NODE_ENV = "development" }
-
-[context.staging]
-  environment = { NODE_ENV = "staging" }
-
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
 
 [[plugins]]
   package = "netlify-plugin-submit-sitemap"
-
-[plugins.inputs]
-  baseUrl = "https://your-site-url.netlify.app"
-  sitemapPath = "/sitemap.xml"
