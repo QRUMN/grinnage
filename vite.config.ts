@@ -1,22 +1,21 @@
-import { UserConfig } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
 // https://vitejs.dev/config/
-export default (): UserConfig => ({
+export default defineConfig({
   plugins: [react()],
   build: {
     outDir: 'dist',
-    assetsDir: 'assets',
     emptyOutDir: true,
     sourcemap: false,
-    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'router': ['react-router-dom'],
-          'ui': [
+          vendor: [
+            'react',
+            'react-dom',
+            'react-router-dom',
             '@radix-ui/react-dialog',
             '@radix-ui/react-label',
             '@radix-ui/react-select'

@@ -2,10 +2,13 @@
   "name": "vite-react-typescript-starter",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "node scripts/build.js",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
