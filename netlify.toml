@@ -1,10 +1,9 @@
 [build]
-  command = "npm install && npm install -g vite && vite build"
+  command = "npm install && node build.mjs"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
-  VITE_BUILD_MODE = "production"
   NODE_ENV = "production"
 
 [[redirects]]
