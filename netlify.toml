@@ -1,6 +1,7 @@
 [build]
-  command = "chmod +x build.sh && ./build.sh"
+  command = "npm install && npx vite build"
   publish = "dist"
+  base = "/"
 
 [build.environment]
   NODE_VERSION = "18"
