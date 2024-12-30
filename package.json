@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "./node_modules/.bin/vite build --outDir dist",
+    "build": "npx vite build",
     "typecheck": "tsc",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
