@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && node build.mjs"
+  command = "chmod +x build.sh && ./build.sh"
   publish = "dist"
 
 [build.environment]
