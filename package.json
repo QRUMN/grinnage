@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npx typescript@5.3.3 tsc --noEmit && npx vite@5.0.8 build",
+    "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc",
+    "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
