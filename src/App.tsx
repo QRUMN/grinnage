@@ -9,6 +9,8 @@ import { AuthGuard } from './components/auth/AuthGuard';
 import { Wallet } from './components/wallet/Wallet';
 import { AdminWallet } from './pages/dashboard/admin/AdminWallet';
 import { useTheme } from './hooks/useTheme';
+import { About } from './pages/About';
+import { Contact } from './pages/Contact';
 
 // Dashboard Pages
 import { ResidentialDashboard } from './pages/dashboard/residential/ResidentialDashboard';
@@ -37,6 +39,8 @@ function App() {
           <Route path="/" element={<Layout><HomePage /></Layout>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route path="/about" element={<Layout><About /></Layout>} />
+          <Route path="/contact" element={<Layout><Contact /></Layout>} />
 
           {/* Residential Dashboard */}
           <Route path="/dashboard" element={

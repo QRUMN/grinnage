@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
 import { authStateAtom } from '../../store/auth';
 import {
@@ -16,9 +16,11 @@ import {
   Users,
   Activity,
   Wallet,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ThemeToggle } from '../ui/ThemeToggle';
+import { authApi } from '../../lib/api/auth';
 
 const getNavItems = (role: string) => {
   switch (role) {
@@ -60,8 +62,18 @@ const getNavItems = (role: string) => {
 
 export const DashboardLayout = () => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { user } = useAtomValue(authStateAtom);
   const navItems = getNavItems(user?.role || '');
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -91,12 +103,21 @@ export const DashboardLayout = () => {
           </nav>
 
           <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{user?.name}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{user?.role}</p>
+            <div className="flex flex-col space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{user?.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 ml-2">{user?.role}</p>
+                </div>
+                <ThemeToggle />
               </div>
-              <ThemeToggle />
+              <button
+                onClick={handleLogout}
+                className="flex items-center w-full px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                <LogOut className="w-5 h-5 mr-2" />
+                Logout
+              </button>
             </div>
           </div>
         </div>
