@@ -1,6 +1,7 @@
 import { createTransport } from 'nodemailer';
 import { render } from '@react-email/render';
 import { EmailTemplate } from '@/components/email/EmailTemplate';
+import React from 'react';
 
 const transporter = createTransport({
   host: process.env.SMTP_HOST,
@@ -32,7 +33,7 @@ export async function sendEmailNotification({
   type,
   data,
 }: EmailNotificationProps) {
-  const templates: Record<EmailNotificationType, any> = {
+  const templates: Record<EmailNotificationType, { subject: string; template: React.ComponentType<any> }> = {
     WELCOME: {
       subject: 'Welcome to Grinnage Ex',
       template: EmailTemplate.Welcome,
@@ -64,7 +65,7 @@ export async function sendEmailNotification({
   };
 
   const { subject, template: Template } = templates[type];
-  const html = render(<Template {...data} />);
+  const html = render(React.createElement(Template, data));
 
   try {
     await transporter.sendMail({
@@ -101,25 +102,28 @@ class EmailQueue {
     const now = new Date();
 
     try {
-      // Sort by priority and scheduled time
-      this.queue.sort((a, b) => {
+      // Process emails that are scheduled for now or earlier
+      const readyEmails = this.queue.filter(
+        email => !email.scheduledFor || email.scheduledFor <= now
+      );
+
+      // Sort by priority
+      readyEmails.sort((a, b) => {
         const priorityOrder = { high: 0, medium: 1, low: 2 };
         return priorityOrder[a.priority] - priorityOrder[b.priority];
       });
 
-      // Process emails that are due
-      const dueEmails = this.queue.filter(
-        email => !email.scheduledFor || email.scheduledFor <= now
-      );
-
-      for (const email of dueEmails) {
+      // Process each email
+      for (const email of readyEmails) {
         await sendEmailNotification(email);
         this.queue = this.queue.filter(e => e !== email);
       }
+    } catch (error) {
+      console.error('Error processing email queue:', error);
     } finally {
       this.processing = false;
       
-      // If there are still emails in the queue, process them
+      // If there are still emails in the queue, continue processing
       if (this.queue.length > 0) {
         setTimeout(() => this.process(), 1000);
       }
