@@ -11,6 +11,14 @@ try {
   console.log('📦 Installing dependencies...');
   execSync('npm ci', { stdio: 'inherit' });
 
+  // Install TypeScript explicitly
+  console.log('📦 Installing TypeScript...');
+  execSync('npm install --save-dev typescript@latest', { stdio: 'inherit' });
+
+  // Install Vite and its plugin
+  console.log('📦 Installing Vite and plugins...');
+  execSync('npm install --save-dev vite@latest @vitejs/plugin-react@latest', { stdio: 'inherit' });
+
   // Run TypeScript compilation
   console.log('🔍 Type checking...');
   execSync('npx tsc --noEmit', { stdio: 'inherit' });
