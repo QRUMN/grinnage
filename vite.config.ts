@@ -5,32 +5,27 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   build: {
     outDir: 'dist',
-    emptyOutDir: true,
-    sourcemap: false,
+    sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: [
-            'react',
-            'react-dom',
-            'react-router-dom',
+          'react-vendor': ['react', 'react-dom'],
+          'ui-vendor': [
             '@radix-ui/react-dialog',
-            '@radix-ui/react-label',
-            '@radix-ui/react-select'
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-popover',
+            '@radix-ui/react-slot',
+            '@radix-ui/react-tabs'
           ]
         }
       }
     }
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src')
-    }
-  },
-  server: {
-    port: 5173,
-    host: true
   }
 })

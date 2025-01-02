@@ -1,40 +1,46 @@
 import React from 'react';
-import { useAtomValue } from 'jotai';
-import { Navigate, useLocation } from 'react-router-dom';
-import { authStateAtom } from '../../store/auth';
-import type { UserRole } from '../../types/auth';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { UserRole } from '@/store/auth';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 interface AuthGuardProps {
   children: React.ReactNode;
-  allowedRoles: UserRole[];
+  allowedRoles?: UserRole[];
 }
 
-export const AuthGuard = ({ children, allowedRoles }: AuthGuardProps) => {
-  const { isAuthenticated, loading, user } = useAtomValue(authStateAtom);
-  const location = useLocation();
+export function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
+  const { user, isAuthenticated, loading, checkAuth } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      checkAuth();
+    }
+  }, [isAuthenticated, checkAuth]);
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    if (!loading && isAuthenticated && allowedRoles) {
+      const hasRequiredRole = user && allowedRoles.includes(user.role);
+      if (!hasRequiredRole) {
+        navigate('/unauthorized');
+      }
+    }
+  }, [loading, isAuthenticated, user, allowedRoles, navigate]);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#56e39f]"></div>
+        <LoadingSpinner />
       </div>
     );
   }
 
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  if (!allowedRoles.includes(user.role)) {
-    // Redirect to appropriate dashboard based on user role
-    const dashboardRoutes = {
-      residential: '/dashboard',
-      commercial: '/commercial',
-      admin: '/admin'
-    };
-    
-    return <Navigate to={dashboardRoutes[user.role]} replace />;
-  }
-
   return <>{children}</>;
-};
+}

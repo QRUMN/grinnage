@@ -1,103 +1,125 @@
-import type { User, LoginFormData, RegisterData } from '../../types/auth';
+import { User, UserRole } from '@/store/auth';
 
-interface AuthResponse {
+interface LoginResponse {
   user: User;
   token: string;
 }
 
-// Mock users for development
-const MOCK_USERS = [
-  {
-    id: '1',
-    email: 'residential@example.com',
-    password: 'password123',
-    fullName: 'John Residential',
-    role: 'residential',
-    clientType: 'residential'
-  },
-  {
-    id: '2',
-    email: 'commercial@example.com',
-    password: 'password123',
-    fullName: 'Jane Commercial',
-    role: 'commercial',
-    clientType: 'commercial',
-    companyName: 'ABC Corp',
-    companySize: '50-100'
-  },
-  {
-    id: '3',
-    email: 'admin@example.com',
-    password: 'password123',
-    fullName: 'Admin User',
-    role: 'admin'
-  }
-];
+interface RegisterResponse {
+  user: User;
+  token: string;
+}
 
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  userType: 'user' | 'manager' | 'admin';
+  companyName?: string;
+  companySize?: string;
+}
+
+// Mock API service for authentication
 export const authApi = {
-  login: async (credentials: LoginFormData): Promise<AuthResponse> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Find user
-    const user = MOCK_USERS.find(u => 
-      u.email === credentials.email && 
-      u.password === credentials.password &&
-      u.role === credentials.userType
-    );
-    
-    if (!user) {
-      throw new Error('Invalid credentials');
-    }
-
-    const { password, ...userWithoutPassword } = user;
-    const response: AuthResponse = {
-      user: userWithoutPassword,
-      token: 'mock-jwt-token'
+  login: async (credentials: { email: string; password: string }): Promise<LoginResponse> => {
+    // In a real app, this would make an API call
+    // For demo purposes, we'll simulate a successful login
+    const mockUsers: Record<string, User> = {
+      'user@example.com': {
+        id: '1',
+        email: 'user@example.com',
+        name: 'John Doe',
+        role: 'user',
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      'manager@example.com': {
+        id: '2',
+        email: 'manager@example.com',
+        name: 'Jane Smith',
+        role: 'manager',
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      'admin@example.com': {
+        id: '3',
+        email: 'admin@example.com',
+        name: 'Admin User',
+        role: 'admin',
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
     };
 
-    // Store auth data
-    localStorage.setItem('auth_token', response.token);
-    localStorage.setItem('user_role', user.role);
-    localStorage.setItem('user_data', JSON.stringify(userWithoutPassword));
-    
-    return response;
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
+
+    const user = mockUsers[credentials.email];
+    if (!user || credentials.password !== 'password123') {
+      throw new Error('Invalid email or password');
+    }
+
+    return {
+      user,
+      token: 'mock-jwt-token',
+    };
   },
 
-  register: async (data: RegisterData) => {
-    const { email, firstName, lastName, password } = data;
-    // Simulated API call - in a real app, you would hash the password and send it to the server
-    return new Promise<AuthResponse>((resolve) => {
-      setTimeout(() => {
-        // Store hashed password or token in a real implementation
-        localStorage.setItem('auth_token', `${email}_${password}`);
-        resolve({
-          user: {
-            id: '1',
-            email,
-            firstName,
-            lastName,
-            role: 'user'
-          },
-        });
-      }, 1000);
-    });
-  },
+  register: async (data: RegisterData): Promise<RegisterResponse> => {
+    // In a real app, this would make an API call
+    // For demo purposes, we'll simulate a successful registration
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
 
-  logout: async () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_role');
-    localStorage.removeItem('user_data');
+    const user: User = {
+      id: Math.random().toString(36).substr(2, 9),
+      email: data.email,
+      name: data.name,
+      role: data.userType,
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      companyName: data.companyName,
+      companySize: data.companySize,
+    };
+
+    return {
+      user,
+      token: 'mock-jwt-token',
+    };
   },
 
   getCurrentUser: async (): Promise<User> => {
-    const token = localStorage.getItem('auth_token');
-    const userData = localStorage.getItem('user_data');
-    
-    if (!token || !userData) {
-      throw new Error('No auth token');
-    }
-    
-    return JSON.parse(userData);
+    // In a real app, this would validate the JWT token and return the current user
+    // For demo purposes, we'll return a mock user
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
+
+    const mockUser: User = {
+      id: '1',
+      email: 'user@example.com',
+      name: 'John Doe',
+      role: 'user',
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    return mockUser;
+  },
+
+  logout: async (): Promise<void> => {
+    // In a real app, this would invalidate the JWT token
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
+  },
+
+  forgotPassword: async (email: string): Promise<void> => {
+    // In a real app, this would trigger a password reset email
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
+  },
+
+  resetPassword: async (token: string, password: string): Promise<void> => {
+    // In a real app, this would validate the reset token and update the password
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
   },
 };

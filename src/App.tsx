@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { UserRole } from '@/store/auth';
 import { Layout } from './components/layout/Layout';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { HomePage } from './pages/HomePage';
@@ -26,6 +28,7 @@ import { Alerts } from './pages/dashboard/Alerts';
 
 function App() {
   const { mounted } = useTheme();
+  const { user } = useAuth();
 
   if (!mounted) {
     return null;
@@ -43,50 +46,77 @@ function App() {
           <Route path="/contact" element={<Layout><Contact /></Layout>} />
 
           {/* Residential Dashboard */}
-          <Route path="/dashboard" element={
-            <AuthGuard allowedRoles={['residential']}>
-              <DashboardLayout />
-            </AuthGuard>
-          }>
-            <Route index element={<ResidentialDashboard />} />
-            <Route path="appointments" element={<Appointments />} />
-            <Route path="documents" element={<Documents />} />
-            <Route path="billing" element={<Billing />} />
-            <Route path="wallet" element={<Wallet />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="notifications" element={<Notifications />} />
-            <Route path="alerts" element={<Alerts />} />
+          <Route
+            element={
+              <AuthGuard allowedRoles={['residential' as UserRole]}>
+                <DashboardLayout />
+              </AuthGuard>
+            }
+          >
+            <Route path="/dashboard" element={<ResidentialDashboard />} />
+            <Route path="/dashboard/appointments" element={<Appointments />} />
+            <Route path="/dashboard/documents" element={<Documents />} />
+            <Route path="/dashboard/billing" element={<Billing />} />
+            <Route path="/dashboard/wallet" element={<Wallet />} />
+            <Route path="/dashboard/settings" element={<Settings />} />
+            <Route path="/dashboard/notifications" element={<Notifications />} />
+            <Route path="/dashboard/alerts" element={<Alerts />} />
           </Route>
 
           {/* Commercial Dashboard */}
-          <Route path="/commercial" element={
-            <AuthGuard allowedRoles={['commercial']}>
-              <DashboardLayout />
-            </AuthGuard>
-          }>
-            <Route index element={<CommercialDashboard />} />
-            <Route path="properties" element={<Overview />} />
-            <Route path="contracts" element={<Documents />} />
-            <Route path="billing" element={<Billing />} />
-            <Route path="wallet" element={<Wallet />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="reports" element={<Overview />} />
+          <Route
+            element={
+              <AuthGuard allowedRoles={['commercial' as UserRole]}>
+                <DashboardLayout />
+              </AuthGuard>
+            }
+          >
+            <Route path="/commercial" element={<CommercialDashboard />} />
+            <Route path="/commercial/properties" element={<Overview />} />
+            <Route path="/commercial/contracts" element={<Documents />} />
+            <Route path="/commercial/billing" element={<Billing />} />
+            <Route path="/commercial/wallet" element={<Wallet />} />
+            <Route path="/commercial/settings" element={<Settings />} />
+            <Route path="/commercial/reports" element={<Overview />} />
           </Route>
 
           {/* Admin Dashboard */}
-          <Route path="/admin" element={
-            <AuthGuard allowedRoles={['admin']}>
-              <DashboardLayout />
-            </AuthGuard>
-          }>
-            <Route index element={<AdminDashboard />} />
-            <Route path="users" element={<Overview />} />
-            <Route path="properties" element={<Overview />} />
-            <Route path="reports" element={<Overview />} />
-            <Route path="wallet" element={<AdminWallet />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="logs" element={<Overview />} />
+          <Route
+            element={
+              <AuthGuard allowedRoles={['admin' as UserRole]}>
+                <DashboardLayout />
+              </AuthGuard>
+            }
+          >
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<Overview />} />
+            <Route path="/admin/properties" element={<Overview />} />
+            <Route path="/admin/reports" element={<Overview />} />
+            <Route path="/admin/wallet" element={<AdminWallet />} />
+            <Route path="/admin/settings" element={<Settings />} />
+            <Route path="/admin/logs" element={<Overview />} />
           </Route>
+
+          {/* Redirect root to appropriate dashboard based on user role */}
+          <Route
+            path="/"
+            element={
+              user ? (
+                <Navigate
+                  to={
+                    user.role === 'admin'
+                      ? '/admin'
+                      : user.role === 'commercial'
+                      ? '/commercial'
+                      : '/dashboard'
+                  }
+                  replace
+                />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
 
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/login" replace />} />
