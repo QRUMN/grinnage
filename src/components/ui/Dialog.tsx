@@ -28,10 +28,13 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 export interface DialogProps extends DialogPrimitive.DialogProps {
   onClose?: () => void;
+  children: React.ReactNode;
+  open: boolean;
+  title?: string;
 }
 
-const Dialog = ({ onClose, ...props }: DialogProps) => (
-  <DialogPrimitive.Root onOpenChange={onClose} {...props} />
+const Dialog = ({ children, open, onClose, title, ...props }: DialogProps) => (
+  <DialogPrimitive.Root open={open} onOpenChange={onClose} {...props} />
 );
 
 const DialogContent = React.forwardRef<

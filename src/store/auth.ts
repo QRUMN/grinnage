@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-export type UserRole = 'user' | 'admin' | 'manager';
+export type UserRole = 'admin' | 'commercial' | 'residential' | 'user' | 'manager';
 
 export interface User {
   id: string;
